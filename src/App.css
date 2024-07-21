@@ -5,3 +5,23 @@ body {
   background: linear-gradient(#e66465, #9198e5);
   background-size: 100% 100%;
 }
+.card {
+  border-radius: 10px;
+}
+
+.video-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.card-body .text-success, .card-body .text-danger {
+  transition: color 0.3s ease;
+}
+
+.card-body .text-success:hover {
+  color: #007bff; /* Adjust color on hover */
+}
+
+.card-body .text-danger:hover {
+  color: #dc3545; /* Adjust color on hover */
+}

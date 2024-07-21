@@ -72,21 +72,24 @@ function UploadList() {
 
   return (
     <div className="container mt-5">
-      <div className='nav' style={{display:'flex', justifyContent:'space-between'}}>
-        <h2 className="mb-4 text-dark" style={{ paddingTop: 20 }}>Mohan Video Store</h2>
+      <div className='nav d-flex justify-content-between align-items-center'>
+        <div>
+          <h2 className="mb-2 text-dark" style={{ paddingTop: 20, fontFamily: 'Arial, sans-serif' }}>Mohan Video Store</h2>
+          <p className="text-muted mb-0">Total Videos: {videos.length}</p>
+        </div>
         <div className="mt-3">
-          <Link style={{background:"green"}} to="/" className="btn btn-secondary">Back</Link>
+          <Link to="/" className="btn btn-success text-white">Back</Link>
           <button onClick={reloadVideos} className="btn btn-primary ms-2">Reload</button>
         </div>
       </div>
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
         {videos.map(({ url, ref }, index) => (
           <div key={index} className="col">
-            <div className="card h-100" style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
+            <div className="card h-100 border-light shadow-sm">
               <div
                 ref={videoContainerRef}
                 className="video-container"
-                style={{ position: 'elative', cursor: 'pointer' }}
+                style={{ position: 'relative', cursor: 'pointer' }}
                 onClick={toggleFullscreen}
               >
                 <video
@@ -99,10 +102,23 @@ function UploadList() {
                   Your browser does not support the video tag.
                 </video>
               </div>
-              <div className="card-body">
-              <span className="text-primary me-3" onClick={() => handleDownload(url)}><RiVideoDownloadFill /></span>
-
-                <span className="text-primary me-3" onClick={() => handleDelete(ref)}><MdDelete/></span>
+              <div className="card-body d-flex justify-content-between align-items-center">
+                <span 
+                  className="text-success me-3 fs-4" 
+                  onClick={() => handleDownload(url)}
+                >
+                  <RiVideoDownloadFill />
+                </span>
+                <span 
+                  className="text-danger fs-4" 
+                  onClick={() => handleDelete(ref)}
+                  style={{ cursor: 'pointer' }}
+                  data-bs-toggle="tooltip" 
+                  data-bs-placement="top" 
+                  title="Delete"
+                >
+                  <MdDelete />
+                </span>
               </div>
             </div>
           </div>
