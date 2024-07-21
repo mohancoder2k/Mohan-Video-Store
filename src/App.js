@@ -8,9 +8,9 @@ function App() {
   return (
     <Router>
       <Routes>
+    
         <Route exact path="/" element={<Upload />} />
         <Route path="/upload-list" element={<UploadList />} />
-   
       </Routes>
     </Router>
   );
