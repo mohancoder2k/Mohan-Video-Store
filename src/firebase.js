@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 
 // Your web app's Firebase configuration
 /*
@@ -26,3 +26,14 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 export { storage, app };
+export const fetchVideoUrls = async () => {
+  const videoUrls = [];
+  const listRef = ref(storage, 'videos/');
+  const res = await listAll(listRef);
+
+  for (const itemRef of res.items) {
+    const url = await getDownloadURL(itemRef);
+    videoUrls.push(url);
+  }
+  return videoUrls;
+}

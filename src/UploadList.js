@@ -3,12 +3,15 @@ import { storage } from './firebase';
 import { listAll, ref, getDownloadURL, deleteObject } from "firebase/storage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-
 import { Link } from 'react-router-dom';
+
+import { RiVideoDownloadFill } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function UploadList() {
   const [videos, setVideos] = useState([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
   const videoRefs = useRef([]);
   const videoContainerRef = useRef(null);
 
@@ -42,52 +45,16 @@ function UploadList() {
   const handleDelete = async (videoRef) => {
     try {
       await deleteObject(videoRef);
-      setVideos(prevVideos => prevVideos.filter(video => video.ref !== videoRef));
-      alert('Video deleted successfully.');
+      setVideos(prevVideos => prevVideos.filter(video => video.ref!== videoRef));
+      toast.success('Video deleted successfully.');
     } catch (error) {
       console.error('Error deleting video:', error);
-      alert('Failed to delete video.');
+      toast.error('Failed to delete video.');
     }
   };
 
-  const playVideo = (index) => {
-    if (index !== currentVideoIndex) {
-      if (videoRefs.current[currentVideoIndex]) {
-        videoRefs.current[currentVideoIndex].pause();
-      }
-      setCurrentVideoIndex(index);
-    }
-    setIsPlaying(true);
-    if (videoRefs.current[index]) {
-      videoRefs.current[index].play();
-    }
-  };
-
-  const pauseVideo = () => {
-    setIsPlaying(false);
-    if (videoRefs.current[currentVideoIndex]) {
-      videoRefs.current[currentVideoIndex].pause();
-    }
-  };
-
-  const togglePlay = () => {
-    if (isPlaying) {
-      pauseVideo();
-    } else {
-      playVideo(currentVideoIndex);
-    }
-  };
-
-  const playNextVideo = () => {
-    if (currentVideoIndex < videos.length - 1) {
-      playVideo(currentVideoIndex + 1);
-    }
-  };
-
-  const playPreviousVideo = () => {
-    if (currentVideoIndex > 0) {
-      playVideo(currentVideoIndex - 1);
-    }
+  const reloadVideos = () => {
+    fetchVideos();
   };
 
   const toggleFullscreen = () => {
@@ -105,11 +72,12 @@ function UploadList() {
 
   return (
     <div className="container mt-5">
-        <div  className='nav' style={{display:'flex', justifyContent:'space-between'}}>
-      <h2 className="mb-4 text-dark" style={{ paddingTop: 20 }}>Mohan Video Store</h2>
-      <div className="mt-3">
-        <Link  style={{background:"green"}}  to="/" className="btn btn-secondary">Back</Link>
-      </div>
+      <div className='nav' style={{display:'flex', justifyContent:'space-between'}}>
+        <h2 className="mb-4 text-dark" style={{ paddingTop: 20 }}>Mohan Video Store</h2>
+        <div className="mt-3">
+          <Link style={{background:"green"}} to="/" className="btn btn-secondary">Back</Link>
+          <button onClick={reloadVideos} className="btn btn-primary ms-2">Reload</button>
+        </div>
       </div>
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {videos.map(({ url, ref }, index) => (
@@ -118,7 +86,7 @@ function UploadList() {
               <div
                 ref={videoContainerRef}
                 className="video-container"
-                style={{ position: 'relative', cursor: 'pointer' }}
+                style={{ position: 'elative', cursor: 'pointer' }}
                 onClick={toggleFullscreen}
               >
                 <video
@@ -126,21 +94,15 @@ function UploadList() {
                   className="card-img-top"
                   controls
                   style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                  onEnded={playNextVideo}
                 >
                   <source src={url} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
-                <div className="fullscreen-controls">
-                  <button className="btn btn-secondary me-2" onClick={playPreviousVideo} disabled={currentVideoIndex === 0}>Previous</button>
-                  <button className="btn btn-secondary me-2" onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
-                  <button className="btn btn-secondary" onClick={playNextVideo} disabled={currentVideoIndex === videos.length - 1}>Next</button>
-                </div>
               </div>
               <div className="card-body">
-                <p className="card-text">Video Description or Title</p>
-                <button className="btn btn-primary me-2" onClick={() => handleDownload(url)}>Download</button>
-                <button className="btn btn-danger" onClick={() => handleDelete(ref)}>Delete</button>
+              <span className="text-primary me-3" onClick={() => handleDownload(url)}><RiVideoDownloadFill /></span>
+
+                <span className="text-primary me-3" onClick={() => handleDelete(ref)}><MdDelete/></span>
               </div>
             </div>
           </div>
